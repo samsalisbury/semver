@@ -6,6 +6,7 @@ package semver
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -170,4 +171,30 @@ func (v *Version) IsAPreRelease() bool {
 // For example: 1.2.3.4…
 func (t *Version) sharesPrefixWith(o *Version) bool {
 	return signDelta(t.version, o.version, idxReleaseType) == 0
+}
+
+var firstDashAvailable = true
+
+func firstDash() string {
+	if firstDashAvailable {
+		firstDashAvailable = false
+		return "-"
+	}
+	return ""
+}
+
+// 0–3: version, 4: releaseType, 5–8: releaseVer, 9: releaseSpecifier, 10–14: specifier
+func (t *Version) String() string {
+	v := t.version
+	s := fmt.Sprintf("%d.%d.%d", v[0], v[1], v[2])
+	if v[4] != 0 {
+		s += firstDash() + releaseDesc[v[4]]
+	}
+	if v[5] != 0 {
+		s += firstDash() + strconv.Itoa(v[5])
+	}
+	if t.build != 0 {
+		s += "+build" + strconv.Itoa(t.build)
+	}
+	return s
 }

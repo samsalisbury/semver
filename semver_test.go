@@ -249,3 +249,22 @@ func TestVersionOrder(t *testing.T) {
 	})
 
 }
+
+func TestString(t *testing.T) {
+	Convey("String of Version %s should be %s", t, func() {
+		versions := []string{
+			"1.3.8",
+			"1.3.8+build20140722",
+			"1.3.8+build2014",
+			"1.3.8-p3",
+			//"1.3.8-alpha",
+			//"1.3.8-beta",
+			//"1.3.8-pre",
+			"1.3.8-3",
+		}
+		for _, v := range versions {
+			v1, _ := NewVersion(v)
+			So(v1.String(), ShouldEqual, v)
+		}
+	})
+}
